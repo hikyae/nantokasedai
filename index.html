@@ -137,6 +137,18 @@
 			white-space: nowrap;
 		}
 
+		.generation-name a {
+			color: #4f46e5;
+			text-decoration: underline;
+			text-decoration-color: #a5b4fc;
+			text-underline-offset: 3px;
+		}
+
+		.generation-name a:hover {
+			color: #3730a3;
+			text-decoration-color: currentColor;
+		}
+
 		.year-input {
 			width: 110px;
 			padding: 9px 12px;
@@ -224,52 +236,62 @@
 			{
 				name: "団塊世代",
 				startYear: 1947,
-				endYear: 1949
+				endYear: 1949,
+				url: "https://ja.wikipedia.org/wiki/%E5%9B%A3%E5%A1%8A%E3%81%AE%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "しらけ世代",
 				startYear: 1950,
-				endYear: 1967
+				endYear: 1967,
+				url: "https://ja.wikipedia.org/wiki/%E3%81%97%E3%82%89%E3%81%91%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "バブル世代",
 				startYear: 1965,
-				endYear: 1970
+				endYear: 1970,
+				url: "https://ja.wikipedia.org/wiki/%E3%83%90%E3%83%96%E3%83%AB%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "団塊ジュニア世代",
 				startYear: 1971,
-				endYear: 1974
+				endYear: 1974,
+				url: "https://ja.wikipedia.org/wiki/%E5%9B%A3%E5%A1%8A%E3%82%B8%E3%83%A5%E3%83%8B%E3%82%A2"
 			},
 			{
 				name: "就職氷河期世代",
 				startYear: 1970,
-				endYear: 1986
+				endYear: 1986,
+				url: "https://ja.wikipedia.org/wiki/%E5%B0%B1%E8%81%B7%E6%B0%B7%E6%B2%B3%E6%9C%9F"
 			},
 			{
 				name: "Y世代(ミレニアル世代)",
 				startYear: 1980,
-				endYear: 1994
+				endYear: 1994,
+				url: "https://ja.wikipedia.org/wiki/Y%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "ゆとり世代",
 				startYear: 1987,
-				endYear: 2004
+				endYear: 2004,
+				url: "https://ja.wikipedia.org/wiki/%E3%82%86%E3%81%A8%E3%82%8A%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "Z世代",
 				startYear: 1995,
-				endYear: 2009
+				endYear: 2009,
+				url: "https://ja.wikipedia.org/wiki/Z%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "α世代",
 				startYear: 2010,
-				endYear: 2024
+				endYear: 2024,
+				url: "https://ja.wikipedia.org/wiki/%CE%91%E4%B8%96%E4%BB%A3"
 			},
 			{
 				name: "β世代",
 				startYear: 2025,
-				endYear: 2039
+				endYear: 2039,
+				url: "https://ja.wikipedia.org/wiki/%CE%92%E4%B8%96%E4%BB%A3"
 			}
 		];
 
@@ -356,7 +378,13 @@
 										return (
 											<tr key={index}>
 												<td className="generation-name">
-													{generation.name}
+													<a
+														href={generation.url}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{generation.name}
+													</a>
 												</td>
 
 												<td>
