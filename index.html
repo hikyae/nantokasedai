@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>なんとか世代</title>
+
+	<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+	<style>
+		:root {
+			color-scheme: light;
+			font-family:
+				Inter,
+				-apple-system,
+				BlinkMacSystemFont,
+				"Segoe UI",
+				"Noto Sans JP",
+				sans-serif;
+			color: #1f2937;
+			background: #f3f4f6;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			background:
+				radial-gradient(circle at top left, #e0e7ff 0, transparent 35%),
+				radial-gradient(circle at top right, #dbeafe 0, transparent 30%),
+				#f3f4f6;
+		}
+
+		#root {
+			min-height: 100vh;
+		}
+
+		.container {
+			width: min(1100px, calc(100% - 32px));
+			margin: 0 auto;
+			padding: 24px 0;
+		}
+
+		.header {
+			margin-bottom: 16px;
+		}
+
+		.title {
+			margin: 0 0 8px;
+			font-size: 32px;
+			font-weight: 750;
+			letter-spacing: -0.02em;
+			color: #111827;
+		}
+
+		.card {
+			overflow: hidden;
+			border: 1px solid rgba(229, 231, 235, 0.9);
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.88);
+			box-shadow:
+				0 10px 30px rgba(15, 23, 42, 0.07),
+				0 2px 6px rgba(15, 23, 42, 0.04);
+			backdrop-filter: blur(10px);
+		}
+
+		.table-wrapper {
+			overflow-x: auto;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			min-width: 720px;
+			table-layout: fixed;
+		}
+
+		th:nth-child(1),
+		td:nth-child(1) {
+			width: 26%;
+		}
+
+		th:nth-child(2),
+		td:nth-child(2),
+		th:nth-child(3),
+		td:nth-child(3) {
+			width: 22%;
+		}
+
+		th:nth-child(4),
+		td:nth-child(4) {
+			width: 30%;
+		}
+
+		thead {
+			background: #f8fafc;
+		}
+
+		th {
+			padding: 10px 20px;
+			border-bottom: 1px solid #e5e7eb;
+			color: #4b5563;
+			font-size: 13px;
+			font-weight: 700;
+			text-align: left;
+			white-space: nowrap;
+		}
+
+		td {
+			padding: 10px 20px;
+			border-bottom: 1px solid #eef0f3;
+			font-size: 15px;
+			vertical-align: middle;
+		}
+
+		tbody tr:last-child td {
+			border-bottom: 0;
+		}
+
+		tbody tr {
+			transition: background-color 0.15s ease;
+		}
+
+		tbody tr:hover {
+			background: #f8fafc;
+		}
+
+		.generation-name {
+			font-weight: 650;
+			color: #111827;
+			white-space: nowrap;
+		}
+
+		.year-input {
+			width: 110px;
+			padding: 9px 12px;
+			border: 1px solid #d1d5db;
+			border-radius: 8px;
+			background: #fff;
+			color: #1f2937;
+			font: inherit;
+			font-size: 14px;
+			outline: none;
+			transition:
+				border-color 0.15s ease,
+				box-shadow 0.15s ease;
+		}
+
+		.year-input:hover {
+			border-color: #9ca3af;
+		}
+
+		.year-input:focus {
+			border-color: #6366f1;
+			box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+		}
+
+		.age {
+			font-weight: 650;
+			color: #4338ca;
+			white-space: nowrap;
+		}
+
+		.invalid {
+			color: #dc2626;
+			font-weight: 500;
+			white-space: nowrap;
+		}
+
+		.footer {
+			margin-top: 14px;
+			color: #9ca3af;
+			font-size: 13px;
+		}
+
+		@media (max-width: 640px) {
+			.container {
+				width: min(100% - 20px, 1100px);
+				padding: 28px 0;
+			}
+
+			.title {
+				font-size: 26px;
+			}
+
+			.card {
+				border-radius: 12px;
+			}
+
+			th,
+			td {
+				padding: 13px 14px;
+			}
+
+			th:first-child,
+			td:first-child {
+				position: sticky;
+				left: 0;
+				z-index: 2;
+				background: #fff;
+			}
+
+			th:first-child {
+				z-index: 3;
+				background: #f8fafc;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="root"></div>
+
+	<script type="text/babel">
+		const CURRENT_YEAR = new Date().getFullYear();
+
+		const DEFAULT_GENERATIONS = [
+			{
+				name: "団塊世代",
+				startYear: 1947,
+				endYear: 1949
+			},
+			{
+				name: "しらけ世代",
+				startYear: 1950,
+				endYear: 1967
+			},
+			{
+				name: "バブル世代",
+				startYear: 1965,
+				endYear: 1970
+			},
+			{
+				name: "団塊ジュニア世代",
+				startYear: 1971,
+				endYear: 1974
+			},
+			{
+				name: "就職氷河期世代",
+				startYear: 1970,
+				endYear: 1986
+			},
+			{
+				name: "Y世代(ミレニアル世代)",
+				startYear: 1980,
+				endYear: 1994
+			},
+			{
+				name: "ゆとり世代",
+				startYear: 1987,
+				endYear: 2004
+			},
+			{
+				name: "Z世代",
+				startYear: 1995,
+				endYear: 2009
+			},
+			{
+				name: "α世代",
+				startYear: 2010,
+				endYear: 2024
+			},
+			{
+				name: "β世代",
+				startYear: 2025,
+				endYear: 2039
+			}
+		];
+
+		function calculateAgeRange(startYear, endYear) {
+			if (startYear === "" || endYear === "") {
+				return null;
+			}
+
+			const start = Number(startYear);
+			const end = Number(endYear);
+
+			if (!Number.isInteger(start) || !Number.isInteger(end)) {
+				return null;
+			}
+
+			if (start > end) {
+				return null;
+			}
+
+			const youngestAge = CURRENT_YEAR - end;
+			const oldestAge = CURRENT_YEAR - start;
+
+			return {
+				min: youngestAge,
+				max: oldestAge
+			};
+		}
+
+		function formatAgeRange(ageRange) {
+			if (!ageRange) {
+				return "入力を確認してください";
+			}
+
+			if (ageRange.min === ageRange.max) {
+				return `${ageRange.min}歳`;
+			}
+
+			return `${ageRange.min}〜${ageRange.max}歳`;
+		}
+
+		function GenerationTable() {
+			const [generations, setGenerations] = React.useState(
+				DEFAULT_GENERATIONS
+			);
+
+			function handleYearChange(index, field, value) {
+				setGenerations(current => {
+					const updated = [...current];
+
+					updated[index] = {
+						...updated[index],
+						[field]: value === "" ? "" : Number(value)
+					};
+
+					return updated;
+				});
+			}
+
+			return (
+				<div className="container">
+					<header className="header">
+						<h1 className="title">なんとか世代</h1>
+					</header>
+
+					<main className="card">
+						<div className="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>世代名</th>
+										<th>生年(始)</th>
+										<th>生年(終)</th>
+										<th>現在の年齢幅</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									{generations.map((generation, index) => {
+										const ageRange = calculateAgeRange(
+											generation.startYear,
+											generation.endYear
+										);
+
+										return (
+											<tr key={index}>
+												<td className="generation-name">
+													{generation.name}
+												</td>
+
+												<td>
+													<input
+														className="year-input"
+														type="number"
+														step="1"
+														value={generation.startYear}
+														onChange={event =>
+															handleYearChange(
+																index,
+																"startYear",
+																event.target.value
+															)
+														}
+														aria-label={`${generation.name}の生年（始）`}
+													/>
+												</td>
+
+												<td>
+													<input
+														className="year-input"
+														type="number"
+														step="1"
+														value={generation.endYear}
+														onChange={event =>
+															handleYearChange(
+																index,
+																"endYear",
+																event.target.value
+															)
+														}
+														aria-label={`${generation.name}の生年（終）`}
+													/>
+												</td>
+
+												<td>
+													{ageRange ? (
+														<span className="age">
+															{formatAgeRange(ageRange)}
+														</span>
+													) : (
+														<span className="invalid">
+															入力を確認してください
+														</span>
+													)}
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
+					</main>
+
+					<div className="footer">
+						各世代の生年のデフォルト値はWikipedia等の情報を参考に設定した目安です。正確な定義を示すものではありません。<br />
+						年齢は今年の誕生日がすでに来ている前提で計算します。<br />
+						基準年: {CURRENT_YEAR}年
+					</div>
+				</div >
+			);
+		}
+
+		const root = ReactDOM.createRoot(
+			document.getElementById("root")
+		);
+
+		root.render(<GenerationTable />);
+	</script>
+</body>
+
+</html>
